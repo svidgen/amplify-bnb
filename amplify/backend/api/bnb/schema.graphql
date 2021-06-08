@@ -1,11 +1,4 @@
-type User
-	@model
-	@auth(
-		rules: [
-			# ???
-		]
-	)
-{
+type User @model {
 	id: ID!
 	username: String!
 	name: String!
@@ -15,18 +8,96 @@ type User
 }
 
 type Listing @model {
+	id: ID!
+
+	# how to make this geo-searchable?
+	address: String!
+
+	description: String!
+	policies: String!
+	beds: Int!
+	baths: Int!
+	maxGuests: Int!
+
+	owner: Owner! @connection ... 
+	amentities: [Amentity] @connection ...
+	schedule: [Schedules] @connection ...
+	pictures: [Picture] @connection ...
+	deals: [Deal] @connection ...
+
+	# needs to be
+	#     public writeable
+	#     private readable
+	#     owner writeable + readable
+	#     public ... half-readable?
+	# maybe the Booking model needs to be fragmented or requires field-level perms?
+
+	bookings: [Booking] @connection ... 
+}
+
+type Attraction @model {
+	id: ID!
+
+	# geo-like searchable
+	address: String!
+}
+
+type Amenity @model {
+	id: ID!
+	description: String!
 }
 
 type Picture @model {
+	id: ID!
+	owner: User!
+
+	# is there a better way to do this?
+	s3key: String!	
 }
 
 type Schedule @model {
+	id: ID!
+
+	# probably actually need to be String!, as they likely represent
+	# recurring schedules
+	start: AWSDateTime!
+	end: AWSDateTime!
+
+	recurring: Boolean!
+	listing: Listing! @connection ... 
 }
 
 type Booking @model {
+	# public users should be able to see these fields
+	id: ID!
+	listing: Listing! @connection ...
+	start: AWSDateTime!
+	end: AWSDateTime!
+
+	# broad read/write permissions must be granted to both of these users.
+	guest: User! @connection ...
+	host: User! @connection ...
+
+	# semi-private access to these fields
+	price: String!   # we don't use floats for currency!
 }
 
 type Deal @model {
+	id: ID!
 }
 
+type Credit @model {
+	id: ID!
+}
 
+type PaymentSource @model {
+	id: ID!
+}
+
+type Transaction @model {
+	id: ID!
+}
+
+type Review @model {
+	id: ID!
+}

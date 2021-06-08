@@ -5,24 +5,33 @@ entities we need:
 	- contact details
 	- bio
 	- type enum admin, host, guest
-	- referrer is 1:1 with User (self)
-	- has ... lots of things? ... 
-	- has Listings (1:M)
-	- has Bookings (1:M)
-	- has Pictures (1:M)
-	- has Reviews (1:M)
+	- has 
+	- has User (1:1) as Referrer
+	- has Listings (1:M) as Listings
+	- has Bookings (1:M) as Bookings
+	- has Pictures (1:M) as Pictures
+	- has Reviews (1:M) as Reviews
 * Listing : describes a rentable property, room, etc.
-	- address
+	- address (geo/geo-like search)
 	- description
 	- policy text
-	- beds count
-	- max guest count
-	- has Amenities (1:M) as Amentities
+	- beds count (searchable)
+	- baths count (searchable)
+	- max guest count (searchable)
+	- refers to Amenities (M:M) as Amentities
 	- has Schedules (1:M) as Schedule
 	- has Pictures (1:M) as Pictures
 	- has Bookings (1:M) as Bookings
 	- has Deals (1:M) as Deals
 	- belongs to User (M:1) as Owner
+* Amenity
+	- name
+	- description
+	- has Listings (M:M) as Listings
+* Attraction
+	- address (geo/geo-like search)
+	- description
+	- has Pictures (1:M) as Pictures
 * Picture
 	- permissions? ... how is this implemented?
 	- belongs to User
