@@ -1,0 +1,32 @@
+type User
+	@model
+	@auth(
+		rules: [
+			# ???
+		]
+	)
+{
+	id: ID!
+	username: String!
+	name: String!
+	bio: String
+	phone: String!
+	listings: [Listing]
+}
+
+type Listing @model {
+}
+
+type Picture @model {
+}
+
+type Schedule @model {
+}
+
+type Booking @model {
+}
+
+type Deal @model {
+}
+
+

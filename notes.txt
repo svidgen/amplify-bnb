@@ -1,0 +1,81 @@
+entities we need:
+
+* User : describes a person that can log into the system and do things
+	- username
+	- contact details
+	- bio
+	- type enum admin, host, guest
+	- referrer is 1:1 with User (self)
+	- has ... lots of things? ... 
+	- has Listings (1:M)
+	- has Bookings (1:M)
+	- has Pictures (1:M)
+	- has Reviews (1:M)
+* Listing : describes a rentable property, room, etc.
+	- address
+	- description
+	- policy text
+	- beds count
+	- max guest count
+	- has Amenities (1:M) as Amentities
+	- has Schedules (1:M) as Schedule
+	- has Pictures (1:M) as Pictures
+	- has Bookings (1:M) as Bookings
+	- has Deals (1:M) as Deals
+	- belongs to User (M:1) as Owner
+* Picture
+	- permissions? ... how is this implemented?
+	- belongs to User
+	- description and/or alt text
+	- refers to S3 image (1:1 ref)
+* Schedule : a normal, recurring schedule with date/times ranges and prices
+	- start date/time
+	- end date/time
+	- recurring flag?
+	- price
+	- enum Open|Closed ?
+	- belongs to Listing (M:1)
+* Booking | Reservation
+	- refers to Listing (M:1) as Listing
+	- refers to User (M:1) as Guest
+	- has Payments (1:M) as Payments
+	[ - refers to Schedule (M:1) ]?
+* Deal : ability to specify a period of time for discounts, savings on next bookings, etc.
+	- price augmentation, type etc.
+	- belongs to Listing (M:1)
+* Credits : or just a user-balance
+	- amount
+	- reason, description
+	- belongs to User (M:1)
+* PaymentSource : maybe there's a credit balance that goes here?
+	- payment details
+	- belongs to User (M:1) as Payer
+* Transaction
+	- amount
+	- memo
+	- refers to User (M:1) as Payer
+	- refers to User (M:1) as Peyee
+	- refers to Booking (M:1) as 
+* Review
+	- belongs to User (M:1) as Author/Owner
+	- refers to Listing (M:1) as Listing
+
+
+concerns:
+
+* how to query listing schedule by date, correlated with bookings
+	- perhaps we have direct relationship between schedule and booking
+	- perhaps we just query by date range and correlate after-the-fact
+* security and rules enforcement ... lots of server-side logic + enforcement needed here.
+	- what prevents users from overbooking?
+	- payment security
+	- payment negotation
+	- ensuring valid schedule data
+	- some entities can only be created securly server-side (e.g., transactions)
+* selective sync
+	- would need to be able to sync just my reservations | listings | schedules
+		- and related entities
+	- would probably need to query listings LIVE ... else millions of constantly changing listings
+* this model is like many models: many potential implicit M:M relationships
+	- need to be able to traverse and query these efficiently and elegantly
+
